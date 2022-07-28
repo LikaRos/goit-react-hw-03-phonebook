@@ -2,11 +2,30 @@ import { Component } from 'react';
 import { ContactForm } from './ContactForm/ContactForm';
 import { ContactsList } from './ContactsList/ContactsList';
 import { ContactFilter } from './ContactFilter/ContactFilter';
+
+const CONTACTS_KEY = 'contacts-key';
 export class App extends Component {
   state = {
     contacts: [],
     filter: '',
   };
+  componentDidMount() {
+    const localData = localStorage.getItem(CONTACTS_KEY);
+    if (localData) {
+      this.setState({ contacts: JSON.parse(localData) });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { contacts } = this.state;
+    console.log('componentDidUpdate');
+
+    if (contacts.length !== prevState.contacts.length) {
+      console.log(contacts);
+      console.log('updated contacts');
+      localStorage.setItem(CONTACTS_KEY, JSON.stringify(contacts));
+    }
+  }
 
   addContactData = ({ name, phone, id }) => {
     const contact = { name, phone, id };
